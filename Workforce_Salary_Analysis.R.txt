@@ -1,0 +1,85 @@
+# ----------------------------------
+# Workforce Salary Structure Analysis
+# Author: ELIJAH MAINGI KIOKO
+# Description: Statistical analysis of salary progression
+# across experience levels using visualization and inference.
+# -------------------------------------
+
+library(ggplot2)
+
+# Data Overview
+
+str(staff)
+summary(staff)
+
+# WORKFORCE STRUCTURE
+# Experience Level Distribution
+
+ggplot(staff, aes(x = experience_level, fill = experience_level)) +
+  geom_bar() +
+  labs(
+    title = "Experience Level Distribution",
+    x = "experience level",
+    y = "number of employees"
+  )
+
+# Salary Distribution
+
+ggplot(staff, aes(x = salary_level, fill = salary_level)) +
+  geom_bar() +
+  labs(title = "Salary Distribution across Levels",
+       x = "salary level",
+       y = "number of employees")
+
+# Experience vs Salary Relationship
+
+ggplot(staff, aes(x = experience, y = salary)) +
+  geom_point(size = 3) +
+  geom_smooth(method = "lm", se = FALSE) +
+  labs(title = "Experience vs Salary Relationship",
+       x = "years of experience",
+       y = "salary")
+
+# Correlation Analysis
+
+cor(staff$experience, staff$salary)
+
+# Distribution Analysis
+
+ggplot(staff, aes(x = salary)) +
+  geom_histogram(aes(y = ..density..),
+                 binwidth = 10000,
+                 fill = "skyblue",
+                 color = "black") +
+  geom_density(color = "red", linewidth = 1) +
+  labs(title = "Salary Density",
+       x = "Salary",
+       y = "Density")
+
+
+unique(staff$experience_level)
+staff2 <- subset(staff,experience_level %in% c("JUNIOR", "SENIOR"))
+unique(staff2$experience_level)
+
+# T-Test: Junior vs Senior
+
+t_test_result <- t.test(salary ~ experience_level,
+       data = staff2,
+       alternative = "two.sided")
+t_test_result
+
+# ANOVA Analysis
+
+anova_model <- aov(salary ~ experience_level,
+                   data = staff)
+summary(anova_model)
+
+# Post-hoc Analysis
+
+TukeyHSD(anova_model)
+
+# Linear Regression Model
+
+lm_model <- lm(salary ~ experience, data = staff)
+summary(lm_model)
+
